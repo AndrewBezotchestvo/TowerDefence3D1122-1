@@ -26,15 +26,25 @@ public class EnemyController : MonoBehaviour
     {
         if(Vector3.Distance(transform.position, wayPoints[curentPointIndex].transform.position) < reachDistance)
         {
-            curentPointIndex += 1;
+            if (isMoving) curentPointIndex += 1;
         }
+        if (curentPointIndex < wayPoints.Count) isMoving = true;
+        else isMoving = false;
+
+        if (!isMoving) animator.Play("attack");
     }
 
     void FixedUpdate()
     {
+        if (!isMoving) return; 
+
         Transform currentPoint = wayPoints[curentPointIndex].transform;
         direction = (currentPoint.position - transform.position).normalized;
         rb.MovePosition(direction * moveSpeed *Time.fixedDeltaTime + transform.position);
+
+        //Quaternion lookRotation = Quaternion.LookRotation(direction);
+        //transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 200 * Time.fixedDeltaTime);
+        transform.rotation = Quaternion.LookRotation(direction);
     }
 
 }

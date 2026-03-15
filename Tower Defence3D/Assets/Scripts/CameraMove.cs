@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
+    [Range (-100f, 100f)] [SerializeField]private float maxX;
+    [Range (-100f, 100f)] [SerializeField]private float minX;
+    [Range (-100f, 100f)] [SerializeField]private float maxZ;
+    [Range (-100f, 100f)] [SerializeField]private float minZ;
+
     public float speed = 5f;
     public float horizontalSens = 2f;
 
