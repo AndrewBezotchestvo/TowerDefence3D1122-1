@@ -30,6 +30,23 @@ public class CameraMove : MonoBehaviour
         movement = transform.TransformDirection(movement); // переместить камеру в направлении, в котором она смотрит
         movement.y = 0; // сохранить высоту камеры, чтобы она не поднималась или опускалась
         movement.z *= 1.5f;
+
+        if (transform.position.x + movement.x > maxX)
+        {
+            movement.x = -0.01f;
+        }
+        if (transform.position.z + movement.z > maxZ)
+        {
+            movement.z = -0.01f;
+        }
+        if (transform.position.x - movement.x < minX)
+        {
+            movement.x = 0.01f;
+        }
+        if (transform.position.z - movement.z < minZ)
+        {
+            movement.z = 0.01f;
+        }
         transform.position += movement;
         
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -7,6 +8,7 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed = 5f;
     public float reachDistance = 0.5f;
     public float health = 100;
+    public GameObject target;
 
     private Rigidbody rb;
     private Animator animator;
@@ -28,7 +30,7 @@ public class EnemyController : MonoBehaviour
         {
             if (isMoving) curentPointIndex += 1;
         }
-        if (curentPointIndex < wayPoints.Count) isMoving = true;
+        if (curentPointIndex < wayPoints.Count - 1) isMoving = true;
         else isMoving = false;
 
         if (!isMoving) animator.Play("attack");
@@ -36,7 +38,12 @@ public class EnemyController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!isMoving) return; 
+        if (!isMoving) 
+        {
+            direction = (target.transform.position - transform.position).normalized;
+            transform.rotation = Quaternion.LookRotation(direction);
+            return; 
+        }
 
         Transform currentPoint = wayPoints[curentPointIndex].transform;
         direction = (currentPoint.position - transform.position).normalized;
@@ -44,7 +51,21 @@ public class EnemyController : MonoBehaviour
 
         //Quaternion lookRotation = Quaternion.LookRotation(direction);
         //transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 200 * Time.fixedDeltaTime);
-        transform.rotation = Quaternion.LookRotation(direction);
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        lookRotation.x = 0;
+        lookRotation.z = 0;
+        transform.rotation = lookRotation;
+    }
+
+    public void GiveDamage(float damage)
+    {
+        health -= damage;
+        if(health <= 0) Invoke("Die", 2);
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
     }
 
 }
